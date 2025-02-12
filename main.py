@@ -24,7 +24,7 @@ class URLRequest(BaseModel):
     url: str        # TODO: HttpUrl
 
 @app.post("/process_audio")
-def submit_url(request: URLRequest):
+def _process_audio(request: URLRequest):
     path_audio = download_audio(url=request.url, path_out=path_data)
     return {"message": "URL recibida", "url": request.url}
 
