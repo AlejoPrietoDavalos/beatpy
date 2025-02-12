@@ -1,7 +1,7 @@
+- https://github.com/deezer/spleeter
 
 
 ## Quickstart (Backend)
-
 - Crear entorno virtual.
 ```bash
 cd /path/to/project
@@ -22,3 +22,6 @@ pip install -r requirements.txt
 ```bash
 python3 main.py
 ```
+
+## Doc API
+- `Con el backend ejecutando:` http://127.0.0.1:8000/redoc
