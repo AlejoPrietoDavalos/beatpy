@@ -1,4 +1,6 @@
+## Audio Tool
 - https://github.com/deezer/spleeter
+- Funciona con `numpy<2` y `python3.10.x`, usar pyenv para entorno.
 
 
 ## Quickstart (Backend)
