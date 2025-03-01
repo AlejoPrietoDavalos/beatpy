@@ -5,13 +5,17 @@ from fastapi import FastAPI
 from pydantic import BaseModel, HttpUrl
 import uvicorn
 
-from api.tools.youtube.download_audio import download_audio
+from api.tools.youtube.download_audio import download_audio, extract_youtube_id
 
 
 path_data = Path(os.getenv("PATH_DATA", "data"))    # TODO: En el servidor colocar bien.
+path_input = path_data / "input"
+path_output = path_data / "output"
 #----> FIXME: Borrar.
 try:
     path_data.mkdir(exist_ok=True)
+    path_input.mkdir(exist_ok=True)
+    path_output.mkdir(exist_ok=True)
 except:
     pass
 #----> FIXME: Borrar.
