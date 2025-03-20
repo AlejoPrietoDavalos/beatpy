@@ -5,9 +5,11 @@ from pydantic import BaseModel
 import uvicorn
 
 from youtube.download_audio import Youtube, youtube_id_from_url
+from spleeter_utils import get_cmd_run_spleeter
 from const import path_extracted
 
 app = FastAPI()
+STEMS = 5
 
 
 class URLRequest(BaseModel):
@@ -20,7 +22,10 @@ def _process_audio(request: URLRequest):
         path_out=path_extracted
     )
     # TODO: Ver si ya lo tenía descargado para enviarle el mismo.
-    youtube.download_audio()
+    if not youtube.path_folder_video.exists():
+        youtube.download_audio()
+
+    get_cmd_run_spleeter(youtube_id=youtube.youtube_id, stems=STEMS)
     return {"message": "URL recibida", "url": request.url}
 
 
