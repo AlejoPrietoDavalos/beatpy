@@ -1,25 +1,11 @@
-from pathlib import Path
 import os
 
 from fastapi import FastAPI
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel
 import uvicorn
 
-from api.tools.youtube.download_audio import download_audio, extract_youtube_id
-
-
-path_data = Path(os.getenv("PATH_DATA", "data"))    # TODO: En el servidor colocar bien.
-path_input = path_data / "input"
-path_output = path_data / "output"
-#----> FIXME: Borrar.
-try:
-    path_data.mkdir(exist_ok=True)
-    path_input.mkdir(exist_ok=True)
-    path_output.mkdir(exist_ok=True)
-except:
-    pass
-#----> FIXME: Borrar.
-
+from youtube.download_audio import Youtube, youtube_id_from_url
+from const import path_extracted
 
 app = FastAPI()
 
@@ -29,9 +15,14 @@ class URLRequest(BaseModel):
 
 @app.post("/process_audio")
 def _process_audio(request: URLRequest):
-    path_audio = download_audio(url=request.url, path_out=path_data)
+    youtube = Youtube(
+        youtube_id=youtube_id_from_url(url=request.url),
+        path_out=path_extracted
+    )
+    youtube.download_audio()
+
     return {"message": "URL recibida", "url": request.url}
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=os.getenv("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
