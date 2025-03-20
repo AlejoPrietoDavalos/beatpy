@@ -24,6 +24,9 @@ python3 main.py
 - `Con el backend ejecutando:` http://127.0.0.1:8000/redoc
 
 
+## Youtube
+- `https://github.com/yt-dlp/yt-dlp`
+
 
 ## Audio Tool
 - https://github.com/deezer/spleeter
