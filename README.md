@@ -20,6 +20,15 @@ pip install -r requirements.txt
 python3 main.py
 ```
 
+## Audio Tool
+- https://github.com/deezer/spleeter
+- Funciona con `numpy<2` y `python3.10.x`.
+
+- Instala python3.10.16 y crea el entorno.
+```bash
+sudo ./install_python_spleeter.sh
+```
+
 ## Doc API
 - `Con el backend ejecutando:` http://127.0.0.1:8000/redoc
 
@@ -28,24 +37,7 @@ python3 main.py
 - `https://github.com/yt-dlp/yt-dlp`
 
 
-## Audio Tool
-- https://github.com/deezer/spleeter
-- Funciona con `numpy<2` y `python3.10.x`, usar pyenv para entorno.
 
-- Instalar python3.10.16 con pyenv.
-```bash
-pyenv install 3.10.16
-```
-
-- Crea el entorno de pyenv llamado `env`.
-```bash
-pyenv virtualenv 3.10.16 env
-```
-
-- asd
-```bash
-
-```
 
 ## Probar
 - https://github.com/sigsep/open-unmix-pytorch
