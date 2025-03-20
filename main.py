@@ -19,8 +19,8 @@ def _process_audio(request: URLRequest):
         youtube_id=youtube_id_from_url(url=request.url),
         path_out=path_extracted
     )
+    # TODO: Ver si ya lo tenía descargado para enviarle el mismo.
     youtube.download_audio()
-
     return {"message": "URL recibida", "url": request.url}
 
 
