@@ -12,10 +12,10 @@ def process_audio(*, url: str) -> Response:
 #url = "https://www.youtube.com/watch?v=aIjVro15Dns"
 
 # El cieguito volador
-#url = "https://www.youtube.com/watch?v=ynPjt2_Rb4I"
+url = "https://www.youtube.com/watch?v=ynPjt2_Rb4I"
 
 # World in my eyes - Depeche Mode.
-url = "https://www.youtube.com/watch?v=KzqWe7uYo_A"
+#url = "https://www.youtube.com/watch?v=KzqWe7uYo_A"
 
 r = process_audio(url=url)
 print(f"status_code={r.status_code}")
