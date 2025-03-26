@@ -10,7 +10,7 @@ import os
 
 PATH_ENV = Path.cwd() / os.getenv("ENV_SPLEETER", "_env_spleeter")
 if not PATH_ENV.exists():
-    raise Exception(f"Necesitas crear el entorno de spleeter `pip install {PATH_ENV.name}`")
+    raise Exception(f"Necesitas crear el entorno de spleeter `./1_spleeter_create_env.sh`")
 
 T_Stems = Literal[2, 4, 5]
 ALLOWED_STEMS = (2, 4, 5)
