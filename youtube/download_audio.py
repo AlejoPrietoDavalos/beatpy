@@ -8,6 +8,7 @@ import json
 import re
 
 from yt_dlp import YoutubeDL
+from src.path_download import PathDownload
 
 T_YoutubeId = str
 INDENT = 4
@@ -24,33 +25,45 @@ def youtube_id_from_url(*, url: str) -> Optional[T_YoutubeId]:
     return match.group(1) if match else None
 
 
+def serialize_yt_info(yt_info: dict) -> dict:
+    yt_info_cleaned = {}
+
+    for key, value in yt_info.items():
+        try:
+            # Intenta serializar el valor para ver si es serializable
+            json.dumps(value)
+            yt_info_cleaned[key] = value
+        except (TypeError, ValueError):
+            # Si el valor no es serializable, lo omite
+            continue
+
+    return yt_info_cleaned
+
+
 class Youtube:
-    def __init__(self, *, youtube_id: str, path_out: Path):
+    def __init__(self, *, youtube_id: str, path_download: PathDownload):
         self.youtube_id: T_YoutubeId = youtube_id
-        self.path_out: Path = path_out
-        self.path_folder_video: Path = self.path_out / self.youtube_id
-        self.path_audio: Optional[Path] = None  # Referencia absoluta extraída con la api.
-        
-        self.path_folder_video.mkdir(exist_ok=True) # Se crea el folder que contiene todos los datos.
+        self.path_download = path_download
+
+        # Referencia absoluta extraída con la api.
+        #self.path_audio: Optional[Path] = None
 
     @property
     def url(self) -> str:
         return f"https://www.youtube.com/watch?v={self.youtube_id}"
 
-    @property
-    def path_info(self) -> Path:
-        return self.path_folder_video / "info.json"
-
     def extract_info(self, *, ydl: YoutubeDL) -> dict:
-        """ Extraigo y formateo el `yt_info` y """
         yt_info = ydl.extract_info(self.url, download=True)
+        
+        # Filtra los campos no serializables
+        yt_info = serialize_yt_info(yt_info)
+        
         for field_to_delete in self.info_fields_to_delete():
             yt_info.pop(field_to_delete)
         
-        # Guardo el path_audio, tiene `referencia absoluta`.
-        self.path_audio = Path(yt_info["requested_downloads"][0]["filepath"])
+        #self.path_audio = Path(yt_info["requested_downloads"][0]["filepath"])
 
-        with open(self.path_info, "w") as f:
+        with open(self.path_download.info, "w") as f:
             json.dump(yt_info, f, indent=INDENT)
 
     def download_audio(self) -> None:
@@ -64,7 +77,7 @@ class Youtube:
     def get_options_youtube_dl(self) -> dict:
         return {
             "format": "bestaudio/best",
-            "outtmpl": str(self.path_folder_video / f"{self.youtube_id}.%(ext)s"),
+            "outtmpl": str(self.path_download.folder / f"{self.youtube_id}.%(ext)s"),
             "postprocessors": [
                 {
                     "key": "FFmpegExtractAudio",
