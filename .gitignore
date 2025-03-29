@@ -5,3 +5,6 @@ _env*
 __pycache__/
 data/
 pretrained_models/
+*egg-info
+build/
+dist/
