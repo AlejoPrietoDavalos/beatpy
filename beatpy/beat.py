@@ -1,39 +1,46 @@
 from pathlib import Path
+from typing import Tuple
 
 import librosa
 import librosa.display
 import soundfile as sf
+import numpy as np
 import matplotlib.pyplot as plt
 
+from beatpy.plot import plot_wave, plot_spectrogram
 
-class AudioLibrosa:
+__all__ = ["Beat"]
+
+class BeatBase:
     """
     - TODO: librosa.time_to_frames
     - TODO: librosa.time_to_samples
     """
     def __init__(self, *, path_audio: Path):
         self.path_audio = path_audio
-        self.y, self.sr = librosa.load(self.path_audio, sr=None)
-        self.tempo, self.beat_frames = librosa.beat.beat_track(y=self.y, sr=self.sr)
+        y, sr = librosa.load(self.path_audio, sr=None)
+        self.y: np.ndarray = y
+        self.sr: float = sr
 
     def plot_wave(self):
-        plt.figure(figsize=(20, 4))
-        librosa.display.waveshow(self.y, sr=self.sr)
-        plt.title("Forma de onda")
-        plt.show()
+        plot_wave(y=self.y, sr=self.sr)
 
     def plot_spectrogram(self):
-        S = librosa.stft(self.y)
-        S_db = librosa.amplitude_to_db(abs(S))
-        plt.figure(figsize=(20, 10))
-        librosa.display.specshow(S_db, sr=self.sr, x_axis="time", y_axis="log")
-        plt.colorbar()
-        plt.title("Espectrograma")
-        plt.show()
+        plot_spectrogram(y=self.y, sr=self.sr)
+
+    def get_tempo_beat_frames(self) -> Tuple[float, np.ndarray]:
+        tempo, beat_frames = librosa.beat.beat_track(y=self.y, sr=self.sr)
+        return tempo, beat_frames
+
+
+class Beat(BeatBase):
+    def __init__(self, *, path_audio: Path):
+        super().__init__(path_audio=path_audio)
 
     def _get_metronome(self):
+        tempo, beat_frames = self.get_tempo_beat_frames()
         # Convertir beat frames a tiempos en segundos
-        beat_times = librosa.frames_to_time(self.beat_frames, sr=self.sr)
+        beat_times = librosa.frames_to_time(beat_frames, sr=self.sr)
 
         # Detectar el primer onset fuerte (inicio de la canción)
         onset_env = librosa.onset.onset_strength(y=self.y, sr=self.sr)
@@ -49,7 +56,7 @@ class AudioLibrosa:
         # Guardar el audio combinado
         sf.write("metronome_synced.wav", click_track, self.sr)
 
-        print(f"Tempo estimado: {self.tempo} BPM")
+        print(f"Tempo estimado: {tempo} BPM")
         print(f"Primer onset detectado en: {first_onset_time:.2f} s")
 
         S = librosa.stft(self.y)  # Transformada de Fourier de corta duración

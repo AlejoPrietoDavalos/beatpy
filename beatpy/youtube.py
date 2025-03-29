@@ -8,7 +8,7 @@ import json
 import re
 
 from yt_dlp import YoutubeDL
-from src.path_download import PathDownload
+from beatpy.path_download import PathDownload
 
 T_YoutubeId = str
 INDENT = 4

@@ -14,3 +14,4 @@ class PathDownload:
         self.other = self.folder / "other.wav"
         self.piano = self.folder / "piano.wav"
         self.vocals = self.folder / "vocals.wav"
+ 

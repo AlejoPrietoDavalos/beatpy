@@ -13,8 +13,8 @@ from pydantic import BaseModel
 import uvicorn
 
 from beatpy.youtube import Youtube, youtube_ids_from_urls
-from src.path_download import PathDownload
-from src.spleeter_utils import get_cmd_run_spleeter
+from beatpy.path_download import PathDownload
+from beatpy.spleeter_cmd import get_cmd_run_spleeter
 
 logger = logging.getLogger(__name__)
 app = FastAPI()
@@ -31,7 +31,6 @@ def process_audio(*, youtube_id: str) -> None:
     youtube = Youtube(youtube_id=youtube_id, path_download=path_download)
     youtube.download_audio()
     # TODO: Ver si ya lo tenía descargado para enviarle el mismo.
-
     get_cmd_run_spleeter(youtube_id=youtube.youtube_id, stems=STEMS)
 
 
