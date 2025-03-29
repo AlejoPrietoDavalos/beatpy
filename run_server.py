@@ -1,8 +1,8 @@
 from typing import List
 from dotenv import load_dotenv
-load_dotenv()
 import logging
 import os
+load_dotenv()
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s"
@@ -12,7 +12,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import uvicorn
 
-from beatpy.youtube.download_audio import Youtube, youtube_ids_from_urls
+from beatpy.youtube import Youtube, youtube_ids_from_urls
 from src.path_download import PathDownload
 from src.spleeter_utils import get_cmd_run_spleeter
 
