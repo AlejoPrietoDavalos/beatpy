@@ -1,4 +1,10 @@
+env_*
 env/
 *.env*
+_env*
 __pycache__/
-
+data/
+pretrained_models/
+*egg-info
+build/
+dist/
