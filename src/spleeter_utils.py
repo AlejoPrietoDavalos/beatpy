@@ -6,8 +6,10 @@
 from typing import Literal
 import subprocess
 from pathlib import Path
+import logging
 import os
 
+logger = logging.getLogger(__name__)
 PATH_ENV = Path.cwd() / os.getenv("ENV_SPLEETER", "_env_spleeter")
 if not PATH_ENV.exists():
     raise Exception(f"Necesitas crear el entorno de spleeter `./1_spleeter_create_env.sh`")
@@ -24,6 +26,7 @@ def get_cmd_run_spleeter(*, youtube_id: str, stems: T_Stems) -> None:
     """
     - TODO: https://github.com/deezer/spleeter/wiki/2.-Getting-started#using-models-up-to-16khz
     """
+    logger.info(f"- Run spleeter - youtube_id={youtube_id}")
     if stems not in ALLOWED_STEMS:
         raise ValueError(f"Invalid stem {stems}.")
     CMD_RUN_SPLEETER = (

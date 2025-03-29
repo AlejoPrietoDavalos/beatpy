@@ -1,3 +1,6 @@
+from typing import List
+from dotenv import load_dotenv
+load_dotenv()
 import logging
 import os
 logging.basicConfig(
@@ -5,11 +8,11 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel
 import uvicorn
 
-from youtube.download_audio import Youtube, youtube_id_from_url
+from youtube.download_audio import Youtube, youtube_ids_from_urls
 from src.path_download import PathDownload
 from src.spleeter_utils import get_cmd_run_spleeter
 
@@ -19,23 +22,26 @@ STEMS = 5
 
 
 class URLRequest(BaseModel):
-    url: str        # TODO: HttpUrl
+    urls: List[str]        # TODO: HttpUrl
 
-@app.post("/process_audio")
-def _process_audio(request: URLRequest):
-    logger.info(f"~~~~~ request.url={request.url} ~~~~~")
 
-    youtube_id = youtube_id_from_url(url=request.url)
-    if youtube_id is None:
-        raise HTTPException(status_code=404, detail="Invalid url.")
-
+def process_audio(*, youtube_id: str) -> None:
+    logger.info(f"~~~~~ Process Audio - youtube_id={youtube_id} ~~~~~")
     path_download = PathDownload(youtube_id=youtube_id)
     youtube = Youtube(youtube_id=youtube_id, path_download=path_download)
     youtube.download_audio()
     # TODO: Ver si ya lo tenía descargado para enviarle el mismo.
 
     get_cmd_run_spleeter(youtube_id=youtube.youtube_id, stems=STEMS)
-    return {"message": "URL recibida", "url": request.url}
+
+
+@app.post("/process_audio")
+def _process_audio(request: URLRequest):
+    for youtube_id, url in youtube_ids_from_urls(urls=request.urls):
+        if youtube_id is None:
+            logger.error(f"Invalid url {url}")
+        process_audio(youtube_id=youtube_id)
+    return {"message": "URLs recibida", "urls": f"{request.urls}"}
 
 
 if __name__ == "__main__":

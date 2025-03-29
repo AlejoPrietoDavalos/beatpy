@@ -2,8 +2,8 @@
 - TODO: Averiguar si puedo controlar el suffix de una forma cómoda.
 """
 from typing import Optional, List
-from pathlib import Path
 from urllib.parse import urlparse
+import logging
 import json
 import re
 
@@ -12,6 +12,8 @@ from src.path_download import PathDownload
 
 T_YoutubeId = str
 INDENT = 4
+logger = logging.getLogger(__name__)
+
 
 def youtube_id_from_url(*, url: str) -> Optional[T_YoutubeId]:
     # Validar que la URL es de YouTube (sin importar el esquema http/https)
@@ -23,6 +25,9 @@ def youtube_id_from_url(*, url: str) -> Optional[T_YoutubeId]:
     pattern = r"(?:v=|\/)([0-9A-Za-z_-]{11})"
     match = re.search(pattern, url)
     return match.group(1) if match else None
+
+def youtube_ids_from_urls(*, urls: List[str]) -> List[tuple[Optional[T_YoutubeId], str]]:
+    return [(youtube_id_from_url(url=url), url) for url in urls]
 
 
 def serialize_yt_info(yt_info: dict) -> dict:
@@ -70,6 +75,7 @@ class Youtube:
         """
         - Crea un folder en `path_out/<youtube_id>/<youtube_id>.mp3`.
         """
+        logger.info(f"- Download audio - youtube_id={self.youtube_id}")
         with YoutubeDL(self.get_options_youtube_dl()) as ydl:
             yt_info = self.extract_info(ydl=ydl)
             # --> TODO: Se puede seguir procesando el yt_info.
