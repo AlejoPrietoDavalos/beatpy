@@ -12,7 +12,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import uvicorn
 
-from youtube.download_audio import Youtube, youtube_ids_from_urls
+from beatpy.youtube.download_audio import Youtube, youtube_ids_from_urls
 from src.path_download import PathDownload
 from src.spleeter_utils import get_cmd_run_spleeter
 
