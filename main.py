@@ -20,11 +20,6 @@ from const import path_extracted
 logger = logging.getLogger(__name__)
 app = FastAPI()
 
-
-class URLRequest(BaseModel):
-    urls: List[str]        # TODO: HttpUrl
-    stems: T_Stems = 5
-
 def process_audio(*, youtube_id: str, stems: T_Stems) -> None:
     logger.info(f"~~~~~ Process Audio - youtube_id={youtube_id} ~~~~~")
     youtube = Youtube(youtube_id=youtube_id, path_root=path_extracted)
@@ -39,6 +34,10 @@ def process_audio(*, youtube_id: str, stems: T_Stems) -> None:
         if p.suffix == ".wav":
             ConvertAudio.to_mp3(path_in=p)
 
+
+class URLRequest(BaseModel):
+    urls: List[str]        # TODO: HttpUrl
+    stems: T_Stems = 5
 
 @app.post("/process_audio")
 def _process_audio(request: URLRequest):
