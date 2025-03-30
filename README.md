@@ -4,7 +4,7 @@
 2. Separa la canción en pistas `(.wav)` con los instrumentos: `Vocals / drums / bass / piano / other`.
 3. Se convierte `.wav -> .png` para bajar el peso.
 4. Se calcula el espectrograma para cada separación.
-- Ejemplo: `youtube_id = 5ViMA_qDKTU` Joy Division - Isolation.
+- Ejemplo: [Joy Division - Isolation](https://www.youtube.com/watch?v=5ViMA_qDKTU)
 ![Spectrogram - Song: [Joy Division - Isolation]](plots/spleeter_5ViMA_qDKTU.png)
 
 ## Quickstart (Backend)
@@ -26,7 +26,7 @@ pip install -r requirements.txt
 
 - Run.
 ```bash
-python3 run_server.py
+python3 main.py
 ```
 
 ## Audio Tool
