@@ -1,3 +1,4 @@
+from typing import Generator
 from pathlib import Path
 
 class PathsBeatpy:
@@ -15,3 +16,11 @@ class PathsBeatpy:
         self.other = self.folder / "other.mp3"
         self.piano = self.folder / "piano.mp3"
         self.vocals = self.folder / "vocals.mp3"
+
+    def iter_spleeter_output(self) -> Generator[Path, None, None]:
+        yield self.audio
+        yield self.drums
+        yield self.bass
+        yield self.vocals
+        yield self.other
+        yield self.piano
