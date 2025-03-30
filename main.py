@@ -1,8 +1,8 @@
 from typing import List
 from dotenv import load_dotenv
-load_dotenv()
 import logging
 import os
+load_dotenv()
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s"
@@ -12,35 +12,39 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import uvicorn
 
-from beatpy.youtube.download_audio import Youtube, youtube_ids_from_urls
-from src.path_download import PathDownload
-from src.spleeter_utils import get_cmd_run_spleeter
+from beatpy.youtube import Youtube, youtube_ids_from_urls
+from beatpy.spleeter_cmd import get_cmd_run_spleeter, T_Stems
+from beatpy.convert_audio import ConvertAudio
+from const import path_extracted
 
 logger = logging.getLogger(__name__)
 app = FastAPI()
-STEMS = 5
+
+def process_audio(*, youtube_id: str, stems: T_Stems) -> None:
+    logger.info(f"~~~~~ Process Audio - youtube_id={youtube_id} ~~~~~")
+    youtube = Youtube(youtube_id=youtube_id, path_root=path_extracted)
+    youtube.download_audio()
+    # TODO: Ver si ya lo tenía descargado para enviarle el mismo.
+    get_cmd_run_spleeter(
+        path_root=youtube.paths.root,
+        path_audio=youtube.paths.audio,
+        stems=stems
+    )
+    for p in youtube.paths.folder.iterdir():
+        if p.suffix == ".wav":
+            ConvertAudio.to_mp3(path_in=p)
 
 
 class URLRequest(BaseModel):
     urls: List[str]        # TODO: HttpUrl
-
-
-def process_audio(*, youtube_id: str) -> None:
-    logger.info(f"~~~~~ Process Audio - youtube_id={youtube_id} ~~~~~")
-    path_download = PathDownload(youtube_id=youtube_id)
-    youtube = Youtube(youtube_id=youtube_id, path_download=path_download)
-    youtube.download_audio()
-    # TODO: Ver si ya lo tenía descargado para enviarle el mismo.
-
-    get_cmd_run_spleeter(youtube_id=youtube.youtube_id, stems=STEMS)
-
+    stems: T_Stems = 5
 
 @app.post("/process_audio")
 def _process_audio(request: URLRequest):
     for youtube_id, url in youtube_ids_from_urls(urls=request.urls):
         if youtube_id is None:
             logger.error(f"Invalid url {url}")
-        process_audio(youtube_id=youtube_id)
+        process_audio(youtube_id=youtube_id, stems=request.stems)
     return {"message": "URLs recibida", "urls": f"{request.urls}"}
 
 

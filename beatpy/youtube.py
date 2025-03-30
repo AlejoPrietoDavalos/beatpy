@@ -3,12 +3,14 @@
 """
 from typing import Optional, List
 from urllib.parse import urlparse
+from pathlib import Path
 import logging
 import json
 import re
 
 from yt_dlp import YoutubeDL
-from src.path_download import PathDownload
+
+from beatpy.paths import PathsBeatpy
 
 T_YoutubeId = str
 INDENT = 4
@@ -46,12 +48,9 @@ def serialize_yt_info(yt_info: dict) -> dict:
 
 
 class Youtube:
-    def __init__(self, *, youtube_id: str, path_download: PathDownload):
+    def __init__(self, *, youtube_id: str, path_root: Path):
         self.youtube_id: T_YoutubeId = youtube_id
-        self.path_download = path_download
-
-        # Referencia absoluta extraída con la api.
-        #self.path_audio: Optional[Path] = None
+        self.paths = PathsBeatpy(youtube_id=youtube_id, path_root=path_root)
 
     @property
     def url(self) -> str:
@@ -66,9 +65,10 @@ class Youtube:
         for field_to_delete in self.info_fields_to_delete():
             yt_info.pop(field_to_delete)
         
-        #self.path_audio = Path(yt_info["requested_downloads"][0]["filepath"])
+        # Path donde descarga el audio dentro de la maquina.
+        #path_audio = Path(yt_info["requested_downloads"][0]["filepath"])
 
-        with open(self.path_download.info, "w") as f:
+        with open(self.paths.info, "w") as f:
             json.dump(yt_info, f, indent=INDENT)
 
     def download_audio(self) -> None:
@@ -83,7 +83,7 @@ class Youtube:
     def get_options_youtube_dl(self) -> dict:
         return {
             "format": "bestaudio/best",
-            "outtmpl": str(self.path_download.folder / f"{self.youtube_id}.%(ext)s"),
+            "outtmpl": str(self.paths.folder / f"{self.youtube_id}.%(ext)s"),
             "postprocessors": [
                 {
                     "key": "FFmpegExtractAudio",

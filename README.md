@@ -1,3 +1,12 @@
+
+### Sistema Spleeter
+1. Descarga la canción dado un `youtube_id`.
+2. Separa la canción en pistas `(.wav)` con los instrumentos: `Vocals / drums / bass / piano / other`.
+3. Se convierte `.wav -> .png` para bajar el peso.
+4. Se calcula el espectrograma para cada separación.
+- Ejemplo: `youtube_id = 5ViMA_qDKTU` Joy Division - Isolation.
+![Spectrogram - Song: [Joy Division - Isolation]](plots/spleeter_5ViMA_qDKTU.png)
+
 ## Quickstart (Backend)
 - Crear entorno virtual.
 ```bash
@@ -37,6 +46,8 @@ sudo ./install_python_spleeter.sh
 - `https://github.com/yt-dlp/yt-dlp`
 
 
+## Datasets
+- https://www.kaggle.com/datasets/anubhavchhabra/drum-kit-sound-samples/data
 
 
 ## Probar
