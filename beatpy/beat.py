@@ -1,11 +1,11 @@
 from pathlib import Path
-from typing import Tuple
 
 import librosa
 import librosa.display
 import soundfile as sf
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.axes import Axes
 
 from beatpy.plot import plot_wave, plot_spectrogram
 
@@ -18,6 +18,8 @@ class BeatBase:
     """
     def __init__(self, *, path_audio: Path):
         self.path_audio = path_audio
+        self.name = self.path_audio.name
+
         y, sr = librosa.load(self.path_audio, sr=None)
         self.y: np.ndarray = y
         self.sr: float = sr
@@ -25,6 +27,8 @@ class BeatBase:
         self._tempo: np.ndarray = None
         self._beat_frames: np.ndarray = None
         self._beat_times: np.ndarray = None
+        self._S: np.ndarray = None
+        self._S_db: np.ndarray = None
 
     @property
     def tempo(self) -> np.ndarray:
@@ -40,21 +44,43 @@ class BeatBase:
 
     @property
     def beat_times(self) -> np.ndarray:
-        """Convertir beat frames a tiempos en segundos"""
+        """ Convertir beat frames a tiempos en segundos"""
         if self._beat_times is None:
             self._beat_times = librosa.frames_to_time(self.beat_frames, sr=self.sr)
         return self._beat_times
+
+    @property
+    def S(self) -> np.ndarray:
+        """ Transformada de Fourier de corta duración (STFT)"""
+        if self._S is None:
+            self._S = librosa.stft(self.y)
+        return self._S
+
+    @property
+    def S_dD(self) -> np.ndarray:
+        """ Magnitud de S en decibeles"""
+        if self._S_db is None:
+            self._S_db = librosa.amplitude_to_db(abs(self.S))
+        return self._S_db
 
     def _update_tempo_beat_frames(self) -> None:
         tempo, beat_frames = librosa.beat.beat_track(y=self.y, sr=self.sr)
         self._tempo = tempo
         self._beat_frames = beat_frames
 
-    def plot_wave(self):
-        plot_wave(y=self.y, sr=self.sr)
+    def plot_wave(self, *, ax: Axes):
+        plot_wave(ax=ax, y=self.y, sr=self.sr, title= f"Wave {self.name}")
 
-    def plot_spectrogram(self):
-        plot_spectrogram(y=self.y, sr=self.sr)
+    def plot_spectrogram(
+            self, *, ax: Axes,
+            vmin: float = None, vmax: float = None,
+            color_xaxis: str = "black"
+    ):
+        plot_spectrogram(
+            ax=ax, sr=self.sr, S_db=self.S_dD,
+            title=f"Spectrogram {self.name}",
+            vmin=vmin, vmax=vmax, color_xaxis=color_xaxis
+        )
 
 
 class Beat(BeatBase):
