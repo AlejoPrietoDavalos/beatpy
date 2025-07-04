@@ -41,6 +41,10 @@ class URLRequest(BaseModel):
 
 @app.post("/process_audio")
 def _process_audio(request: URLRequest):
+    """
+    - TODO: Segurizar el youtube_id. Que sea real.
+    - TODO: Ver dentro del rango del espectrograma, si es de buena o mala calidad, un if.
+    """
     for youtube_id, url in youtube_ids_from_urls(urls=request.urls):
         if youtube_id is None:
             logger.error(f"Invalid url {url}")
