@@ -15,7 +15,7 @@ import uvicorn
 from beatpy.youtube import Youtube, youtube_ids_from_urls
 from beatpy.spleeter_cmd import get_cmd_run_spleeter, T_Stems
 from beatpy.convert_audio import ConvertAudio
-from const import path_extracted
+from beatpy.const import path_extracted
 
 logger = logging.getLogger(__name__)
 app = FastAPI()

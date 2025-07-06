@@ -10,7 +10,7 @@ from matplotlib.axes import Axes
 
 from beatpy.beat import Beat
 from beatpy.youtube import Youtube
-from const import path_extracted, COLOR_BACKGROUND, COLOR_TEXT
+from beatpy.const import path_extracted, COLOR_BACKGROUND, COLOR_TEXT
 
 
 def plot_wave(
