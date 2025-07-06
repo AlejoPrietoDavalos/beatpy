@@ -1,0 +1,4 @@
+numpy<2
+spleeter
+fastapi==0.115.14
+uvicorn==0.33.0

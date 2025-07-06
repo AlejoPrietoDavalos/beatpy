@@ -31,6 +31,7 @@ python3 main.py
 
 ## Audio Tool
 - https://github.com/deezer/spleeter
+- https://hub.docker.com/r/deezer/spleeter
 - Funciona con `numpy<2` y `python3.10.x`.
 
 - Instala python3.10.16 y crea el entorno.

@@ -1,0 +1,14 @@
+services:
+  app:
+    build:
+      context: ./spleeter_sdk
+    container_name: spleeter_full
+    volumes:
+      - ./spleeter_sdk:/app
+      - ./input:/input
+      - ./output:/output
+      - ./models:/model
+    ports:
+      - "8001:8001"
+    environment:
+      - MODEL_PATH=/model

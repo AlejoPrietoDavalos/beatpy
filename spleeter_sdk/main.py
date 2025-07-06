@@ -3,36 +3,37 @@
 - Vocals / drums / bass / other separation (4 stems)
 - Vocals / drums / bass / piano / other separation (5 stems)
 """
-from typing import Literal
-import subprocess
+from typing import Literal, List
 from pathlib import Path
+import subprocess
 import logging
-import os
+
+from pydantic import BaseModel
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 
 logger = logging.getLogger(__name__)
-PATH_ENV = Path.cwd() / os.getenv("ENV_SPLEETER", "_env_spleeter")
-if not PATH_ENV.exists():
-    raise Exception(f"Necesitas crear el entorno de spleeter `./1_spleeter_create_env.sh`")
+
+app = FastAPI()
 
 T_Stems = Literal[2, 4, 5]
 ALLOWED_STEMS = (2, 4, 5)
 DEFAULT_STEMS = 5
 
 
-def run_in_python_env(*, cmd: str, path_env: Path = PATH_ENV) -> None:
-    activate_script = path_env / "bin" / "activate"
-    full_command = f"source {activate_script} && {cmd}"
-    subprocess.run(["bash", "-c", full_command], check=True)
+class URLRequest(BaseModel):
+    youtube_id: str
+    stems: T_Stems = 5
 
-def get_cmd_run_spleeter(
+def run_spleeter(
         *,
-        path_root: Path,
         path_audio: Path,
         stems: T_Stems = DEFAULT_STEMS
 ) -> None:
     """
     - TODO: https://github.com/deezer/spleeter/wiki/2.-Getting-started#using-models-up-to-16khz
     """
+    path_root = Path("data") / "extracted"
     logger.info(f"- Run spleeter - path_audio={path_audio} -> path_out={path_root}")
     if stems not in ALLOWED_STEMS:
         raise ValueError(f"Invalid stem {stems}.")
@@ -43,4 +44,13 @@ def get_cmd_run_spleeter(
         f"-o {path_root} "
         f"{path_audio}"
     )
-    run_in_python_env(cmd=CMD_RUN_SPLEETER, path_env=PATH_ENV)
+    subprocess.run(["bash", "-c", CMD_RUN_SPLEETER])
+
+
+
+
+
+@app.post("/separate")
+def separate(request: URLRequest):
+    """TODO: Seguridad con token."""
+    return {"status": "done"}
