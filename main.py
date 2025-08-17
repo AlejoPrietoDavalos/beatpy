@@ -1,30 +1,29 @@
-from typing import List
+from typing import List, Literal
 from dotenv import load_dotenv
 import logging
 import os
 load_dotenv()
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level="INFO", format="%(asctime)s - %(levelname)s - %(message)s")
 
 from fastapi import FastAPI
 from pydantic import BaseModel
 import uvicorn
 
 from beatpy.youtube import Youtube, youtube_ids_from_urls
-from beatpy.spleeter_cmd import get_cmd_run_spleeter, T_Stems
-from beatpy.convert_audio import ConvertAudio
+from beatpy.process.audio.format import ProcessAudioFormat
 from beatpy.const import path_extracted
 
 logger = logging.getLogger(__name__)
 app = FastAPI()
+T_Stems = Literal[2, 4, 5]
+
 
 def process_audio(*, youtube_id: str, stems: T_Stems) -> None:
     logger.info(f"~~~~~ Process Audio - youtube_id={youtube_id} ~~~~~")
     youtube = Youtube(youtube_id=youtube_id, path_root=path_extracted)
     youtube.download_audio()
     # TODO: Ver si ya lo tenía descargado para enviarle el mismo.
+    # TODO: Cambiar a pegarle a la API de spleeter.
     get_cmd_run_spleeter(
         path_root=youtube.paths.root,
         path_audio=youtube.paths.audio,
@@ -32,7 +31,7 @@ def process_audio(*, youtube_id: str, stems: T_Stems) -> None:
     )
     for p in youtube.paths.folder.iterdir():
         if p.suffix == ".wav":
-            ConvertAudio.to_mp3(path_in=p)
+            ProcessAudioFormat.convert_to_mp3(path_in=p)
 
 
 class URLRequest(BaseModel):
@@ -40,10 +39,11 @@ class URLRequest(BaseModel):
     stems: T_Stems = 5
 
 @app.post("/process_audio")
-def _process_audio(request: URLRequest):
+async def _process_audio(request: URLRequest):
     """
     - TODO: Segurizar el youtube_id. Que sea real.
     - TODO: Ver dentro del rango del espectrograma, si es de buena o mala calidad, un if.
+    - TODO: Hacer el for con asyncio.gather.
     """
     for youtube_id, url in youtube_ids_from_urls(urls=request.urls):
         if youtube_id is None:
