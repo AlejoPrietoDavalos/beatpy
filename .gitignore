@@ -1,6 +1,6 @@
 env_*
 env/
-*.env*
+.env
 _env*
 __pycache__/
 data/
