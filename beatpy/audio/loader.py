@@ -4,7 +4,7 @@ import librosa
 import numpy as np
 
 
-class AudioBase:
+class AudioLoader:
     """
     - TODO: librosa.time_to_frames
     - TODO: librosa.time_to_samples
