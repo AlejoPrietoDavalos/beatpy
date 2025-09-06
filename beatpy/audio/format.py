@@ -1,3 +1,7 @@
+"""
+- TODO: Necesito verificar que tenga ffmpeg instalado en el sistema, 
+o como se puede hacer esto si necesita un contenedor?
+"""
 from typing import Literal
 from pathlib import Path
 import subprocess
