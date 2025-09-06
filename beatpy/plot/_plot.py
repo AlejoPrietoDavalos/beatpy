@@ -1,16 +1,15 @@
-""" Incluir la lógica de diferentes plots."""
 from typing import List, cast
 
+import librosa
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
-import librosa
-import matplotlib.pyplot as plt
-from matplotlib.axes import Axes
 
-from beatpy.beat import Beat
-from beatpy.youtube import Youtube
+from beatpy.audio import Audio
 from beatpy.const import path_extracted, COLOR_BACKGROUND, COLOR_TEXT
+
+COLOR_BACKGROUND = "#212167"
+COLOR_TEXT = "#9696f6"
 
 
 def plot_wave(
@@ -55,7 +54,7 @@ def plot_spectrograms_by_youtube(*, youtube_id: str) -> None:
     youtube = Youtube(youtube_id=youtube_id, path_root=path_extracted)
     
     # Se levantan todos los audios.
-    beats: List[Beat] = [Beat(path_audio=p) for p in youtube.paths.iter_spleeter_output()]
+    beats: List[Audio] = [Audio(path_audio=p) for p in youtube.paths.iter_spleeter_output()]
     if len(beats) != 6:
         raise ValueError("TODO: Manejar bien el plot.")
     
