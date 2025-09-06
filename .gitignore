@@ -1,6 +1,6 @@
 env_*
 env/
-*.env*
+.env
 _env*
 __pycache__/
 data/
@@ -8,3 +8,7 @@ pretrained_models/
 *egg-info
 build/
 dist/
+models/
+
+# Lo crea `spotipy` con las credenciales.
+.cache

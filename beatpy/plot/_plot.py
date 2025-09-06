@@ -1,23 +1,60 @@
 from typing import List, cast
-from dotenv import load_dotenv
-load_dotenv()
 
+import librosa
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 
-from beatpy.beat import Beat
-from beatpy.youtube import Youtube
-from const import path_extracted
+from beatpy.audio import Audio
+from beatpy.const import path_extracted, COLOR_BACKGROUND, COLOR_TEXT
 
-# Definir colores personalizados
 COLOR_BACKGROUND = "#212167"
 COLOR_TEXT = "#9696f6"
+
+
+def plot_wave(
+        *,
+        ax: Axes,
+        y: np.ndarray,
+        sr: float,
+        title: str = "Wave"
+) -> None:
+    librosa.display.waveshow(y, ax=ax, sr=sr)
+    ax.set_title(title)
+
+def plot_spectrogram(
+    *,
+    ax: Axes,
+    sr: float,
+    S_db: np.ndarray,
+    title: str = "Spectrogram",
+    ylabel: str = "Frequency [Hz]",
+    cmap: str = "magma",
+    vmin: float = None,
+    vmax: float = None,
+    color_xaxis: str = "black"
+) -> None:
+    """Plotea un espectrograma con escala logarítmica de frecuencia en el eje especificado, 
+    usando una escala de color definida por vmin y vmax."""
+    img = librosa.display.specshow(
+        S_db, ax=ax, sr=sr,
+        x_axis="time", y_axis="log",
+        cmap=cmap, vmin=vmin, vmax=vmax
+    )
+    ax.set_title(title)
+    ax.set_ylabel(ylabel)
+
+    # Cambiar el color del texto del eje horizontal (Time)
+    ax.xaxis.label.set_color(color_xaxis)  # Color claro para el eje X (Tiempo)
+
+    # Agregar barra de color con valores en dB
+    plt.colorbar(img, ax=ax, format="%+2.0f dB")
 
 def plot_spectrograms_by_youtube(*, youtube_id: str) -> None:
     youtube = Youtube(youtube_id=youtube_id, path_root=path_extracted)
     
     # Se levantan todos los audios.
-    beats: List[Beat] = [Beat(path_audio=p) for p in youtube.paths.iter_spleeter_output()]
+    beats: List[Audio] = [Audio(path_audio=p) for p in youtube.paths.iter_spleeter_output()]
     if len(beats) != 6:
         raise ValueError("TODO: Manejar bien el plot.")
     
@@ -63,6 +100,3 @@ def plot_spectrograms_by_youtube(*, youtube_id: str) -> None:
     # Guardar la figura
     fig.savefig(path_plots / f"spleeter_{youtube_id}.png", bbox_inches='tight')
     del fig
-
-if __name__ == "__main__":
-    plot_spectrograms_by_youtube(youtube_id="5ViMA_qDKTU")
