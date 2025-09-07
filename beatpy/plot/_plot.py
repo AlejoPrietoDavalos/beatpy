@@ -5,8 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 
-from beatpy.audio import Audio
-from beatpy.const import path_extracted, COLOR_BACKGROUND, COLOR_TEXT
 
 COLOR_BACKGROUND = "#212167"
 COLOR_TEXT = "#9696f6"
