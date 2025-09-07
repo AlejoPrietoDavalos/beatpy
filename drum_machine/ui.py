@@ -3,8 +3,6 @@ import pygame
 from drum_machine.player import DrumMachinePlayer
 from drum_machine.entities.pattern import DrumPattern
 
-BLACK = (0, 0, 0)
-
 
 class DrumMachineUI:
     """Encapsula el loop de pygame y la visualización."""
