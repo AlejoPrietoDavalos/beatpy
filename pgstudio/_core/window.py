@@ -11,8 +11,6 @@ class WindowPGS:
             app_name: str,
             resolution: Tuple[int, int]
     ):
-        pygame.init()
-        pygame.mixer.init()
         self.app_name = app_name
         self.resolution = resolution
         self.win = pg.display.set_mode(resolution)
