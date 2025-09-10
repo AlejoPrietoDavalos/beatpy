@@ -60,6 +60,25 @@ class DrumPatterns(BaseModel):
         """Duración de cada step en segundos según BPM y división de nota."""
         return 60 / self.bpm / self.note_division
 
+    def __repr__(self) -> str:
+        _repr = (
+            f"[BPM] {self.bpm}\n"
+            f"[note_division] {self.note_division}\n"
+        )
+        phrases: Dict[T_Instruments, T_Notes] = {}
+        for drum_pattern in self.patterns:
+            for instrument, notes in drum_pattern.instruments.items():
+                if instrument not in phrases:
+                    phrases[instrument] = ""
+                phrases[instrument] += notes + " "  # Agrego espacio al final para que se vea visualmente.
+        for instrument, notes in phrases.items():
+            notes = notes.strip()
+            _repr += f"{notes} | {instrument}\n"
+        return _repr
+
+    def __str__(self) -> str:
+        return self.__repr__()
+
     @classmethod
     def from_phrase(
         cls: Type[T_DrumPatterns],
