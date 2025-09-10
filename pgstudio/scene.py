@@ -44,9 +44,7 @@ class SceneBase(ABC):
         """ Loop principal de la escena."""
         with self:
             while self.is_running:
-                import random
-                random.randint(0,254)
-                window.fill(color=(random.randint(0,254), random.randint(0,254), random.randint(0,254)))#BLACK)
+                window.fill(color=BLACK)
                 self.run_fill()
                 self.run_events()
                 self.main()
