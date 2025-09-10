@@ -5,7 +5,7 @@ from enum import Enum
 import logging
 import json
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +62,7 @@ class DrumPatterns(BaseModel):
 
     def __repr__(self) -> str:
         _repr = (
-            f"[BPM] {self.bpm}\n"
+            f"[bpm] {self.bpm}\n"
             f"[note_division] {self.note_division}\n"
         )
         phrases: Dict[T_Instruments, T_Notes] = {}
