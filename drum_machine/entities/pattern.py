@@ -62,6 +62,7 @@ class DrumPatterns(BaseModel):
 
     def __repr__(self) -> str:
         _repr = (
+            "\n"
             f"[bpm] {self.bpm}\n"
             f"[note_division] {self.note_division}\n"
         )
