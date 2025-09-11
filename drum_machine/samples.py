@@ -1,32 +1,23 @@
 from typing import Dict, List
 
-import pygame
-
 from drum_machine.const import path_drum_sounds
+from pgstudio.sounds import SoundsPGS
 
 DEFAULT_SAMPLES_NAME = "default"
 T_Pattern = Dict[str, List[int]]
 
-class Samples:
+
+class SoundsSamples(SoundsPGS):
     """TODO: Abstraer la parte del audio de pygame."""
     def __init__(self, *, samples_name: str = DEFAULT_SAMPLES_NAME):
+        super().__init__()
         self.samples_name = samples_name
         self.path_samples = path_drum_sounds / samples_name
-        self.sounds: Dict[str, pygame.mixer.Sound] = self._load_samples()
+        self._load_samples()
 
-    def _load_samples(self):
+    def _load_samples(self) -> None:
         """Carga los sonidos de la batería."""
-        return {
-            p.stem: pygame.mixer.Sound(str(p))
-            for p in self.path_samples.iterdir()    # TODO: Hacer con glob.
-        }
-
-    def play_instrument(self, instrument: str) -> None:
-        """Reproduce el sonido del instrumento."""
-        if instrument not in self.sounds:
-            raise ValueError((
-                "El instrumento no se encuentra cargado."
-                f"Sonidos cargados: {list(self.sounds.keys())}"
-            ))
-
-        self.sounds[instrument].play()
+        for path_sound in self.path_samples.iterdir():
+            # TODO: Hacer con glob.
+            sound_id = path_sound.stem
+            self.load_sound(sound_id=sound_id, path_sound=path_sound)
