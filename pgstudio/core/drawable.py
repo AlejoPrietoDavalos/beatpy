@@ -25,12 +25,12 @@ class PyGameDraw:
 
 class Drawable(ABC):
     @abstractmethod
-    def set_position(self, x: int, y: int) -> None:
+    def set_position(self, *, x: int, y: int) -> None:
         """Mueve el objeto a la posición (x, y)."""
         ...
 
     @abstractmethod
-    def draw(self, surface: pg.Surface) -> None:
+    def draw(self, *, surface: pg.Surface) -> None:
         """Dibuja el objeto en la `surface`."""
         ...
 
@@ -40,10 +40,10 @@ class Rect(Drawable):
         self.color = color
         self.rect = pg.Rect(x, y, width, height)
 
-    def set_position(self, x: int, y: int) -> None:
+    def set_position(self, *, x: int, y: int) -> None:
         self.rect.topleft = (x, y)
 
-    def draw(self, surface: pg.Surface) -> None:
+    def draw(self, *, surface: pg.Surface) -> None:
         PyGameDraw.rect(surface, self.color, self.rect)
 
 
@@ -58,5 +58,5 @@ class Circle(Drawable):
         self.x = x
         self.y = y
 
-    def draw(self, surface: pg.Surface) -> None:
+    def draw(self, *, surface: pg.Surface) -> None:
         PyGameDraw.circle(surface=surface, color=self.color, x=self.x, y=self.y, radius=self.radius)
