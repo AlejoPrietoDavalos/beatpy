@@ -3,8 +3,8 @@ from typing import Dict, Tuple
 import pygame
 from pydantic import BaseModel
 
-from pgstudio._core.clock import ClockPGS, DEFAULT_FPS
-from pgstudio._core.window import WindowPGS
+from pgstudio.core.clock import ClockPGS, DEFAULT_FPS
+from pgstudio.core.window import WindowPGS
 from pgstudio.scene import T_SceneBase
 
 

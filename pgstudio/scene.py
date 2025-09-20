@@ -6,8 +6,8 @@ import logging
 import pygame as pg
 
 from pgstudio.color import BLACK
-from pgstudio._core.window import WindowPGS
-from pgstudio._core.clock import ClockPGS
+from pgstudio.core.window import WindowPGS
+from pgstudio.core.clock import ClockPGS
 
 logger = logging.getLogger(__name__)
 
