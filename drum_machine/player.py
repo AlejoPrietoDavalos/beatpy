@@ -2,9 +2,14 @@ import logging
 import time
 
 from drum_machine.entities.pattern import DrumPatterns
-from drum_machine.samples import Samples
+from drum_machine.samples import SoundsSamples
 
 logger = logging.getLogger(__name__)
+
+
+def get_time_now() -> float:
+    """Utilizar para mayor precisión."""
+    return time.perf_counter()
 
 
 class DrumMachinePlayer:
@@ -12,9 +17,9 @@ class DrumMachinePlayer:
 
     def __init__(self, *, drum_patterns: DrumPatterns):
         self.drum_patterns = drum_patterns
-        self.samples = Samples()
+        self.samples = SoundsSamples()
         self.step = 0
-        self.time_last = time.perf_counter()
+        self.time_last = get_time_now()
 
     def play_step(self) -> None:
         pattern_index = self.step // self.drum_patterns.note_division
@@ -25,7 +30,7 @@ class DrumMachinePlayer:
         logger.info(f"Step={self.step} | Pattern={pattern_index} | Hits: {instrument_hits}")
 
         for instrument_hit in instrument_hits:
-            self.samples.play_instrument(instrument_hit)
+            self.samples.play_sound(sound_id=instrument_hit)
 
     def next_step(self) -> None:
         """Avanza al siguiente step dentro del compás."""
@@ -34,7 +39,7 @@ class DrumMachinePlayer:
 
     def update(self) -> None:
         """Chequea si debe avanzar un step y reproducirlo."""
-        time_now = time.perf_counter()
+        time_now = get_time_now()
         if time_now - self.time_last >= self.drum_patterns.step_duration:
             self.play_step()
             self.next_step()

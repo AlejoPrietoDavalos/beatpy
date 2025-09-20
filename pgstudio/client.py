@@ -3,8 +3,8 @@ from typing import Dict, Tuple
 import pygame
 from pydantic import BaseModel
 
-from pgstudio._core.clock import ClockPGS, DEFAULT_FPS
-from pgstudio._core.window import WindowPGS
+from pgstudio.core.clock import ClockPGS, DEFAULT_FPS
+from pgstudio.core.window import WindowPGS
 from pgstudio.scene import T_SceneBase
 
 
@@ -37,7 +37,11 @@ class ClientPGS:
 
         self.is_app_running = True
         while self.is_app_running:
-            scene._main(window=self.window, clock=self.clock)
+            next_scene_name = scene.run_scene(window=self.window, clock=self.clock)
+            if next_scene_name is None:
+                self.is_app_running = False
+            else:
+                scene = self.scenes[next_scene_name]
 
 #pygame.draw.rect(
 #    self.screen,

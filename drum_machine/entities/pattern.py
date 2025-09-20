@@ -83,6 +83,7 @@ class DrumPatterns(BaseModel):
     @classmethod
     def from_phrase(
         cls: Type[T_DrumPatterns],
+        *,
         bpm: int,
         note_division: int,
         phrases: Dict[TInstruments, T_Notes],
