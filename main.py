@@ -1,8 +1,9 @@
 from dotenv import load_dotenv
-from pgstudio.client import init_pygame, ClientPGS, ConfigClientPGS
-from patterns.porcupine_tree import PorcupineTree
-from scenes.drum_machine import DrumMachineScene
+
 from configure_logging import configure_logging
+from pgstudio.client import init_pygame, ClientPGS, ConfigClientPGS
+from ui.patterns.porcupine_tree import PorcupineTree
+from ui.scenes.drum_machine import DrumMachineScene
 
 load_dotenv()
 configure_logging()
@@ -12,7 +13,7 @@ def get_scenes():
     return {
         "drum_machine": DrumMachineScene(
             name="Drum Machine",
-            drum_patterns=PorcupineTree.the_sound_of_the_muzak()
+            drum_patterns=PorcupineTree.the_sound_of_the_muzak_v2()
         )
     }
 
